@@ -559,23 +559,23 @@ function renderSubjects() {
     app.currentSubject = null;
     return;
   }
-  el.innerHTML = keys.map(name => {
+el.innerHTML = keys.map(name => {
     const topics = app.subjects[name] || [];
     const weakN  = topics.filter(t => app.flags[fkey(name, t.subtopic)]).length;
     const sel    = app.currentSubject === name;
-    return `<div class="subject-item${sel?' selected':''}" onclick="selectSubject(${JSON.stringify(name)})">
+    // FIXED: Changed onclick="" to onclick=''
+    return `<div class="subject-item${sel?' selected':''}" onclick='selectSubject(${JSON.stringify(name)})'>
       <div style="flex:1;min-width:0">
         <div class="subject-name">${esc(name)}</div>
         <div class="subject-meta">${topics.length} subtopics${weakN?' · '+weakN+' weak':''}</div>
       </div>
       <div class="subject-actions">
         ${weakN?`<span class="badge badge-yellow">${weakN} weak</span>`:''}
-        <button class="btn btn-sm btn-ghost btn-icon" title="Edit" onclick="event.stopPropagation();openEditModal(${JSON.stringify(name)})">✎</button>
-        <button class="btn btn-sm btn-ghost btn-icon" title="Delete" onclick="event.stopPropagation();deleteSubject(${JSON.stringify(name)})">✕</button>
+        <button class="btn btn-sm btn-ghost btn-icon" title="Edit" onclick='event.stopPropagation();openEditModal(${JSON.stringify(name)})'>✎</button>
+        <button class="btn btn-sm btn-ghost btn-icon" title="Delete" onclick='event.stopPropagation();deleteSubject(${JSON.stringify(name)})'>✕</button>
       </div>
     </div>`;
   }).join('');
-}
 
 function selectSubject(name) {
   app.currentSubject = name;
