@@ -259,7 +259,7 @@ textarea{resize:vertical;min-height:85px;line-height:1.55}
   </div>
 
   <!-- Topic panel — shown when a subject is selected -->
-  <div id="topic-panel" class="topic-panel">
+  <div id="topic-panel" style="display:none;flex-direction:column;gap:.9rem">
     <div class="divider"></div>
 
     <div class="row-between" style="flex-wrap:wrap;gap:.5rem">
@@ -268,7 +268,7 @@ textarea{resize:vertical;min-height:85px;line-height:1.55}
         <button class="btn btn-sm btn-ghost" onclick="checkAll()">All</button>
         <button class="btn btn-sm btn-ghost" onclick="checkWeakOnly()">Weak only</button>
         <button class="btn btn-sm btn-ghost" onclick="uncheckAll()">None</button>
-        <button class="btn btn-sm btn-ghost" onclick="openEditModal(app.currentSubject)" title="View &amp; edit data">✎</button>
+        <button class="btn btn-sm btn-ghost" onclick="openEditModal(null)" title="View &amp; edit data">✎</button>
       </div>
     </div>
 
@@ -276,9 +276,7 @@ textarea{resize:vertical;min-height:85px;line-height:1.55}
 
     <div id="topic-list" class="topic-list-wrap"></div>
 
-    <div style="position:sticky;bottom:0;padding:.75rem 0 .25rem;background:var(--bg)">
-      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem;font-size:.95rem" onclick="startQuiz()">Start quiz →</button>
-    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem;font-size:.95rem;margin-top:.5rem" onclick="startQuiz()">Start quiz →</button>
   </div>
 
 </div>
@@ -558,7 +556,7 @@ function renderSubjects() {
       </div>
     </div>`;
     // Hide topic panel if no subjects
-    document.getElementById('topic-panel').classList.remove('visible');
+    document.getElementById('topic-panel').style.display='none';
     app.currentSubject = null;
     return;
   }
@@ -589,10 +587,10 @@ function selectSubject(name) {
 function renderTopicPanel() {
   const panel = document.getElementById('topic-panel');
   if (!app.currentSubject || !app.subjects[app.currentSubject]) {
-    panel.classList.remove('visible');
+    panel.style.display='none';
     return;
   }
-  panel.classList.add('visible');
+  panel.style.display='flex';
   document.getElementById('topic-panel-title').textContent = app.currentSubject + ' — pick topics';
 
   const topics = app.subjects[app.currentSubject] || [];
@@ -851,7 +849,7 @@ function exitQuiz() {
 
 function goHome() {
   app.currentSubject=null;
-  document.getElementById('topic-panel').classList.remove('visible');
+  document.getElementById('topic-panel').style.display='none';
   renderSubjects();
   showScreen('home');
 }
@@ -1036,7 +1034,7 @@ function clearAllData() {
   document.getElementById('model-select').value='gemini-2.0-flash';
   document.getElementById('threshold-slider').value=60;
   document.getElementById('threshold-label').textContent='60%';
-  document.getElementById('topic-panel').classList.remove('visible');
+  document.getElementById('topic-panel').style.display='none';
   renderSubjects();
   closeModal('settings-modal');
 }
@@ -1071,7 +1069,7 @@ function deleteSubject(name) {
   LS.set(KEYS.subjects,app.subjects);
   LS.set(KEYS.scores,app.scores);
   LS.set(KEYS.flags,app.flags);
-  if (app.currentSubject===name){ app.currentSubject=null; document.getElementById('topic-panel').classList.remove('visible'); }
+  if (app.currentSubject===name){ app.currentSubject=null; document.getElementById('topic-panel').style.display='none'; }
   renderSubjects();
 }
 
