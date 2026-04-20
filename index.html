@@ -197,6 +197,16 @@ body.light .badge{background:#fdf8ee;color:#8a6000;border-color:#e0c060}
 .dots span:nth-child(2){animation-delay:0.2s}
 .dots span:nth-child(3){animation-delay:0.4s}
 @keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+.help-section{margin-bottom:1.25rem}
+.help-section:last-child{margin-bottom:0}
+.help-section-title{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#c4a95a;margin-bottom:0.5rem;font-family:'DM Mono',monospace}
+.help-step{display:flex;gap:0.75rem;align-items:flex-start;margin-bottom:0.5rem;font-size:0.875rem;line-height:1.55}
+.help-num{width:20px;height:20px;border-radius:4px;background:#c4a95a;color:#0c0c0c;font-size:0.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-family:'DM Mono',monospace}
+.help-tag{display:inline-flex;padding:0.1rem 0.45rem;border-radius:4px;font-size:0.72rem;font-weight:600;font-family:'DM Mono',monospace;background:#2a2000;color:#c4a95a;border:1px solid #3a3000;margin:0 2px}
+body.light .help-tag{background:#fdf8ee;color:#8a6000;border-color:#e0c060}
+.welcome-hero{text-align:center;padding:0.5rem 0 1rem}
+.welcome-hero h1{font-size:2rem;margin-bottom:0.3rem}
+.welcome-hero p{font-size:0.875rem;color:#7a7670}
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -225,6 +235,7 @@ body.light .mic-btn{background:#fff;border-color:#d0ccc6;color:#1a1816}
     </div>
     <div class="header-right">
       <button class="toggle" onclick="toggleTheme()" title="Toggle light/dark"></button>
+      <button class="btn btn-sm btn-ghost" onclick="openModal('help')">Help?</button>
       <button class="btn btn-sm" onclick="openModal('settings')">⚙ Settings</button>
     </div>
   </div>
@@ -257,6 +268,7 @@ body.light .mic-btn{background:#fff;border-color:#d0ccc6;color:#1a1816}
       <div class="tp-controls">
         <button class="btn btn-sm btn-ghost" onclick="checkAll()">All</button>
         <button class="btn btn-sm btn-ghost" onclick="checkWeak()">Weak only</button>
+        <button class="btn btn-sm btn-ghost" onclick="checkUnattempted()">Unattempted</button>
         <button class="btn btn-sm btn-ghost" onclick="uncheckAll()">None</button>
         <button class="btn btn-sm btn-ghost" onclick="openEdit()">✎ Edit</button>
         <button class="btn btn-sm btn-ghost" onclick="exportFlags()">↑ Export</button>
@@ -499,6 +511,92 @@ body.light .mic-btn{background:#fff;border-color:#d0ccc6;color:#1a1816}
   </div>
 </div>
 
+<!-- ▓▓ MODAL: Welcome ▓▓ -->
+<div id="modal-welcome" class="modal-bg" style="display:none" onclick="bgClose(event,'welcome')">
+  <div class="modal-box" style="max-width:560px">
+    <div class="modal-top">
+      <span class="modal-title">Welcome to FlashStudy</span>
+      <button class="btn btn-sm btn-ghost" onclick="closeModal('welcome')">✕</button>
+    </div>
+    <div class="welcome-hero">
+      <h1>FlashStudy</h1>
+      <p>Your AI-powered revision tool. Here's everything you need to know.</p>
+    </div>
+    <div class="help-section">
+      <div class="help-section-title">Getting started</div>
+      <div class="help-step"><span class="help-num">1</span><span>Open <strong>Settings</strong> → get a free Groq key at <strong>console.groq.com</strong> (recommended) or a Gemini key at <strong>aistudio.google.com</strong>. Paste it in and hit Save.</span></div>
+      <div class="help-step"><span class="help-num">2</span><span>Click <strong>↓ Import</strong> → paste your Google Sheets published CSV URL. Your sheet needs columns: <span class="help-tag">Topic</span> <span class="help-tag">Subtopic</span> <span class="help-tag">Notes</span> (optional: <span class="help-tag">Stars</span> <span class="help-tag">Grade</span>).</span></div>
+      <div class="help-step"><span class="help-num">3</span><span>Click a subject to expand it, pick which topics to quiz, then hit <strong>Start quiz →</strong></span></div>
+    </div>
+    <div class="help-section">
+      <div class="help-section-title">During a quiz</div>
+      <div class="help-step"><span class="help-num">✓</span><span>Each card shows a <strong>subtopic</strong> — try to recall which parent topic it belongs to, then hit <strong>Reveal topic</strong>.</span></div>
+      <div class="help-step"><span class="help-num">✓</span><span>Hit <strong>💡 Explain it to me</strong> to get a concise AI explanation of that subtopic in context.</span></div>
+      <div class="help-step"><span class="help-num">✓</span><span>Type or speak your understanding, then <strong>Check with AI</strong> for a scored breakdown — or use the <span class="help-tag">✓</span> <span class="help-tag">~</span> <span class="help-tag">✗</span> buttons to grade yourself manually without using the API.</span></div>
+    </div>
+    <div class="help-section">
+      <div class="help-section-title">Stars, flags &amp; difficulty</div>
+      <div class="help-step"><span class="help-num">★</span><span><strong>3-star topics</strong> appear twice per cycle (same as weak topics). Tap stars on any topic row to set importance.</span></div>
+      <div class="help-step"><span class="help-num">●</span><span>Topics scoring below your threshold (default 60%) are auto-flagged <strong>weak</strong>. Use <strong>Weak only</strong> to drill them specifically.</span></div>
+      <div class="help-step"><span class="help-num">E</span><span>The <span class="help-tag">E</span> <span class="help-tag">M</span> <span class="help-tag">H</span> buttons in the quiz header set grading difficulty. Easy = keywords enough. Hard = full explanation required.</span></div>
+    </div>
+    <div class="help-section">
+      <div class="help-section-title">Voice input</div>
+      <div class="help-step"><span class="help-num">🎤</span><span>Requires a <strong>Groq API key</strong>. Click <strong>🎤 Speak</strong>, talk, click <strong>⏹ Stop</strong> — Whisper transcribes your answer and appends it to the text box.</span></div>
+    </div>
+    <div class="help-section">
+      <div class="help-section-title">Saving progress</div>
+      <div class="help-step"><span class="help-num">!</span><span>Progress (scores, stars, flags) lives in your browser. After each session, click <strong>↑ Export</strong> in the topic panel and paste the CSV into your Google Sheet's extra columns — then reimporting restores everything even after a cache clear.</span></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-top:0.5rem">
+      <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:#7a7670;cursor:pointer">
+        <input type="checkbox" id="welcome-nosee" style="width:14px;height:14px;accent-color:#c4a95a">
+        Don't show this on startup
+      </label>
+      <button class="btn btn-primary" onclick="dismissWelcome()">Get started →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ▓▓ MODAL: Help ▓▓ -->
+<div id="modal-help" class="modal-bg" style="display:none" onclick="bgClose(event,'help')">
+  <div class="modal-box" style="max-width:560px">
+    <div class="modal-top">
+      <span class="modal-title">How to use FlashStudy</span>
+      <button class="btn btn-sm btn-ghost" onclick="closeModal('help')">✕</button>
+    </div>
+    <div class="help-section">
+      <div class="help-section-title">Getting started</div>
+      <div class="help-step"><span class="help-num">1</span><span>Open <strong>Settings</strong> → get a free Groq key at <strong>console.groq.com</strong> (recommended) or a Gemini key at <strong>aistudio.google.com</strong>. Paste it in and hit Save.</span></div>
+      <div class="help-step"><span class="help-num">2</span><span>Click <strong>↓ Import</strong> → paste your Google Sheets published CSV URL. Your sheet needs columns: <span class="help-tag">Topic</span> <span class="help-tag">Subtopic</span> <span class="help-tag">Notes</span> (optional: <span class="help-tag">Stars</span> <span class="help-tag">Grade</span>).</span></div>
+      <div class="help-step"><span class="help-num">3</span><span>Click a subject to expand it, pick which topics to quiz, then hit <strong>Start quiz →</strong></span></div>
+    </div>
+    <div class="help-section">
+      <div class="help-section-title">During a quiz</div>
+      <div class="help-step"><span class="help-num">✓</span><span>Each card shows a <strong>subtopic</strong> — try to recall which parent topic it belongs to, then hit <strong>Reveal topic</strong>.</span></div>
+      <div class="help-step"><span class="help-num">✓</span><span>Hit <strong>💡 Explain it to me</strong> to get a concise AI explanation of that subtopic in context.</span></div>
+      <div class="help-step"><span class="help-num">✓</span><span>Type or speak your understanding, then <strong>Check with AI</strong> for a scored breakdown — or use the <span class="help-tag">✓</span> <span class="help-tag">~</span> <span class="help-tag">✗</span> buttons to grade yourself manually without using the API.</span></div>
+    </div>
+    <div class="help-section">
+      <div class="help-section-title">Stars, flags &amp; difficulty</div>
+      <div class="help-step"><span class="help-num">★</span><span><strong>3-star topics</strong> appear twice per cycle (same as weak topics). Tap stars on any topic row to set importance.</span></div>
+      <div class="help-step"><span class="help-num">●</span><span>Topics scoring below your threshold (default 60%) are auto-flagged <strong>weak</strong>. Use <strong>Weak only</strong> to drill them specifically.</span></div>
+      <div class="help-step"><span class="help-num">E</span><span>The <span class="help-tag">E</span> <span class="help-tag">M</span> <span class="help-tag">H</span> buttons in the quiz header set grading difficulty. Easy = keywords enough. Hard = full explanation required.</span></div>
+    </div>
+    <div class="help-section">
+      <div class="help-section-title">Voice input</div>
+      <div class="help-step"><span class="help-num">🎤</span><span>Requires a <strong>Groq API key</strong>. Click <strong>🎤 Speak</strong>, talk, click <strong>⏹ Stop</strong> — Whisper transcribes your answer and appends it to the text box.</span></div>
+    </div>
+    <div class="help-section">
+      <div class="help-section-title">Saving progress</div>
+      <div class="help-step"><span class="help-num">!</span><span>Progress (scores, stars, flags) lives in your browser. After each session, click <strong>↑ Export</strong> in the topic panel and paste the CSV into your Google Sheet's extra columns — then reimporting restores everything even after a cache clear.</span></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:0.25rem">
+      <button class="btn btn-primary" onclick="closeModal('help')">Got it</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════
 // STORAGE
@@ -513,7 +611,7 @@ var K = {
   manualTL:'fs3_mtl', session:'fs3_sess',
   provider:'fs3_prov', gkey:'fs3_gkey', gmodel:'fs3_gmod',
   grkey:'fs3_grkey', grmodel:'fs3_grmod',
-  threshold:'fs3_thr', theme:'fs3_thm', difficulty:'fs3_diff', muted:'fs3_mute'
+  threshold:'fs3_thr', theme:'fs3_thm', difficulty:'fs3_diff', muted:'fs3_mute', helpSeen:'fs3_help'
 };
 
 // ═══════════════════════════════════════════
@@ -530,7 +628,8 @@ var S = {
   stats:{seen:0,scored:0,totalScore:0,flagged:0},
   pendingCSV:null, editingSubject:null, savedSession:null,
   currentManualGrade:null,
-  difficulty:'easy', muted:false, recognition:null
+  difficulty:'easy', muted:false, recognition:null,
+  sessionDirty:false
 };
 
 // ═══════════════════════════════════════════
@@ -550,6 +649,7 @@ function init() {
   S.threshold  = (LS.get(K.threshold) !== null) ? LS.get(K.threshold) : 60;
   S.difficulty = LS.get(K.difficulty) || 'easy';
   S.muted      = LS.get(K.muted) === true;
+  S.helpSeen   = LS.get(K.helpSeen) === true;
 
   if ((LS.get(K.theme) || 'dark') === 'light') document.body.classList.add('light');
 
@@ -589,8 +689,9 @@ function init() {
 
   // Defer render so page paints before doing heavy DOM work
   setTimeout(function(){ renderSubjects(); }, 0);
-  // Init mic after a short delay (needs DOM ready)
   setTimeout(function(){ initMic(); updateDiffUI(); }, 200);
+  // Show welcome on first launch
+  if (!S.helpSeen) setTimeout(function(){ openModal('welcome'); }, 400);
 }
 
 // ═══════════════════════════════════════════
@@ -669,6 +770,16 @@ function renderSubjects() {
 }
 
 function selectSubject(name) {
+  if (S.currentSubject === name) {
+    // Toggle collapse
+    var panel = document.getElementById('topic-panel');
+    if (panel.style.display === 'flex') {
+      panel.style.display = 'none';
+    } else {
+      panel.style.display = 'flex';
+    }
+    return;
+  }
   S.currentSubject = name;
   renderSubjects();
   renderPanel();
@@ -756,13 +867,13 @@ function renderPanel() {
 
   document.getElementById('topic-rows').querySelectorAll('[data-star]').forEach(function(el2) {
     el2.addEventListener('click', function() {
-      var realKey = keyMap[el2.dataset.key];
-      if (realKey) setStar(realKey, parseInt(el2.dataset.star));
+      var realKey = keyMap[this.dataset.key];
+      if (realKey) setStar(realKey, parseInt(this.dataset.star));
     });
   });
   document.getElementById('topic-rows').querySelectorAll('[data-tl]').forEach(function(el2) {
     el2.addEventListener('click', function() {
-      var realKey = keyMap[el2.dataset.tl];
+      var realKey = keyMap[this.dataset.tl];
       if (realKey) cycleTL(realKey);
     });
   });
@@ -775,6 +886,17 @@ function checkWeak() {
   document.querySelectorAll('.tc').forEach(function(c) {
     var t = topics[parseInt(c.dataset.i)];
     c.checked = t ? !!S.flags[fk(S.currentSubject, t.subtopic)] : false;
+  });
+}
+function checkUnattempted() {
+  var topics = S.subjects[S.currentSubject] || [];
+  document.querySelectorAll('.tc').forEach(function(c) {
+    var t = topics[parseInt(c.dataset.i)];
+    if (!t) { c.checked = false; return; }
+    var k = fk(S.currentSubject, t.subtopic);
+    var hasScore = (S.scores[k] || []).length > 0;
+    var hasManual = !!S.manualTL[k] && S.manualTL[k] !== 'none';
+    c.checked = !hasScore && !hasManual;
   });
 }
 
@@ -1061,6 +1183,8 @@ async function checkAnswer() {
     var k = fk(S.currentSubject, t.subtopic);
     var sc = S.scores[k] || []; sc.push(score);
     S.scores[k] = sc; LS.set(K.scores, S.scores);
+    S.sessionDirty = true;
+    S.sessionDirty = true;
     S.stats.scored++; S.stats.totalScore += score;
 
     // Auto-set manual TL based on AI score
@@ -1444,8 +1568,37 @@ function speakCard() {
   var t = S.queue && S.queue[S.idx];
   if (!t) return;
   var utt = new SpeechSynthesisUtterance(t.subtopic);
-  utt.rate = 0.95; utt.pitch = 1;
+  utt.rate = 0.88;
+  utt.pitch = 1.0;
+  utt.volume = 1.0;
+  // Try to pick a natural-sounding English voice
+  var voices = window.speechSynthesis.getVoices();
+  var preferred = null;
+  // Priority order: Google voices > Microsoft voices > any en-US
+  var priorities = ['Google UK English Female','Google US English','Microsoft Aria','Microsoft Jenny','Samantha'];
+  for (var p = 0; p < priorities.length; p++) {
+    for (var v = 0; v < voices.length; v++) {
+      if (voices[v].name.indexOf(priorities[p]) > -1) { preferred = voices[v]; break; }
+    }
+    if (preferred) break;
+  }
+  // Fallback: any en-US or en-GB voice
+  if (!preferred) {
+    for (var v = 0; v < voices.length; v++) {
+      if (voices[v].lang === 'en-US' || voices[v].lang === 'en-GB') { preferred = voices[v]; break; }
+    }
+  }
+  if (preferred) utt.voice = preferred;
+  utt.lang = 'en-US';
   window.speechSynthesis.speak(utt);
+}
+
+// Voices load async — preload them
+if (window.speechSynthesis) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = function() {
+    window.speechSynthesis.getVoices(); // cache them
+  };
 }
 
 function toggleMute() {
@@ -1614,6 +1767,18 @@ function updateDiffUI() {
 }
 
 // ═══════════════════════════════════════════
+// TAB CLOSE WARNING
+// ═══════════════════════════════════════════
+window.addEventListener('beforeunload', function(e) {
+  if (S.sessionDirty) {
+    var msg = 'You have unsaved progress this session. Export your progress first (topic panel → ↑ Export) so you can restore it if the cache is cleared.';
+    e.preventDefault();
+    e.returnValue = msg;
+    return msg;
+  }
+});
+
+// ═══════════════════════════════════════════
 // PAGE / MODAL / TAB HELPERS
 // ═══════════════════════════════════════════
 function showPage(id){
@@ -1634,6 +1799,15 @@ function switchTab(tab){
 // ═══════════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════════
+function dismissWelcome() {
+  var cb = document.getElementById('welcome-nosee');
+  if (cb && cb.checked) {
+    S.helpSeen = true;
+    LS.set(K.helpSeen, true);
+  }
+  closeModal('welcome');
+}
+
 function fk(s,t){return s+'||'+t;}
 function x(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function setStatus(el,msg,type){el.textContent=msg;el.style.color=type==='ok'?'#7abf70':type==='err'?'#c07070':'#c4a95a';}
